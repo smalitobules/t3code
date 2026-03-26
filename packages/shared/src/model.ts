@@ -130,10 +130,14 @@ export function trimOrNull<T extends string>(value: T | null | undefined): T | n
   return trimmed || null;
 }
 
-export function resolveApiModelId(modelSelection: ModelSelection): string {
+export function resolveApiModelId(
+  modelSelection: ModelSelection,
+  capabilities?: ModelCapabilities,
+): string {
   switch (modelSelection.provider) {
     case "claudeAgent": {
-      const contextWindow = modelSelection.options?.contextWindow;
+      const raw = modelSelection.options?.contextWindow;
+      const contextWindow = capabilities ? resolveContextWindow(capabilities, raw) : raw;
       switch (contextWindow) {
         case "1m":
           return `${modelSelection.model}[1m]`;

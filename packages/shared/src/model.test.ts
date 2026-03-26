@@ -179,6 +179,39 @@ describe("resolveApiModelId", () => {
     ).toBe("claude-opus-4-6");
   });
 
+  it("strips unsupported context window when capabilities are provided", () => {
+    const haikuCaps: ModelCapabilities = {
+      reasoningEffortLevels: [],
+      supportsFastMode: false,
+      supportsThinkingToggle: true,
+      contextWindowOptions: [],
+      promptInjectedEffortLevels: [],
+    };
+    expect(
+      resolveApiModelId(
+        {
+          provider: "claudeAgent",
+          model: "claude-haiku-4-5",
+          options: { contextWindow: "1m" },
+        },
+        haikuCaps,
+      ),
+    ).toBe("claude-haiku-4-5");
+  });
+
+  it("appends suffix when capabilities confirm support", () => {
+    expect(
+      resolveApiModelId(
+        {
+          provider: "claudeAgent",
+          model: "claude-opus-4-6",
+          options: { contextWindow: "1m" },
+        },
+        claudeCaps,
+      ),
+    ).toBe("claude-opus-4-6[1m]");
+  });
+
   it("returns the model as-is for Codex selections", () => {
     expect(resolveApiModelId({ provider: "codex", model: "gpt-5.4" })).toBe("gpt-5.4");
   });
