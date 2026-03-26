@@ -176,8 +176,8 @@ export const MODEL_OPTIONS_BY_PROVIDER = {
         supportsFastMode: true,
         supportsThinkingToggle: false,
         contextWindowOptions: [
-          { value: "200k", label: "200k" },
-          { value: "1m", label: "1M", isDefault: true },
+          { value: "200k", label: "200k", isDefault: true },
+          { value: "1m", label: "1M" },
         ],
         promptInjectedEffortLevels: ["ultrathink"],
       },
@@ -195,8 +195,8 @@ export const MODEL_OPTIONS_BY_PROVIDER = {
         supportsFastMode: false,
         supportsThinkingToggle: false,
         contextWindowOptions: [
-          { value: "200k", label: "200k" },
-          { value: "1m", label: "1M", isDefault: true },
+          { value: "200k", label: "200k", isDefault: true },
+          { value: "1m", label: "1M" },
         ],
         promptInjectedEffortLevels: ["ultrathink"],
       },

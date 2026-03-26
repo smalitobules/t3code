@@ -8,7 +8,9 @@ import {
   type ServerProviderModel,
 } from "@t3tools/contracts";
 import {
+  getDefaultContextWindow,
   getDefaultEffort,
+  hasContextWindowOption,
   hasEffortLevel,
   normalizeModelSlug,
   trimOrNull,
@@ -108,10 +110,19 @@ export function normalizeClaudeModelOptionsWithCapabilities(
   const thinking =
     caps.supportsThinkingToggle && modelOptions?.thinking === false ? false : undefined;
   const fastMode = caps.supportsFastMode && modelOptions?.fastMode === true ? true : undefined;
+  const rawContextWindow = modelOptions?.contextWindow;
+  const defaultContextWindow = getDefaultContextWindow(caps);
+  const contextWindow =
+    rawContextWindow &&
+    rawContextWindow !== defaultContextWindow &&
+    hasContextWindowOption(caps, rawContextWindow)
+      ? rawContextWindow
+      : undefined;
   const nextOptions: ClaudeModelOptions = {
     ...(thinking === false ? { thinking: false } : {}),
     ...(effort ? { effort } : {}),
     ...(fastMode ? { fastMode: true } : {}),
+    ...(contextWindow ? { contextWindow } : {}),
   };
   return Object.keys(nextOptions).length > 0 ? nextOptions : undefined;
 }
