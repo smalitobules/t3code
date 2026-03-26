@@ -606,8 +606,7 @@ function SettingsRouteView() {
     setTheme("system");
     resetSettings();
     if (effectiveDesktopTitleBarMode !== DEFAULT_UNIFIED_SETTINGS.desktopTitleBarMode) {
-      setDesktopTitleBarModeSelection(DEFAULT_UNIFIED_SETTINGS.desktopTitleBarMode);
-      await setDesktopTitleBarMode(DEFAULT_UNIFIED_SETTINGS.desktopTitleBarMode);
+      await updateDesktopTitleBarMode(DEFAULT_UNIFIED_SETTINGS.desktopTitleBarMode);
     }
     setOpenProviderDetails({
       codex: false,
