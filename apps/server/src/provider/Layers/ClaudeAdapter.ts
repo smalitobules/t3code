@@ -44,6 +44,7 @@ import {
   hasEffortLevel,
   applyClaudePromptEffortPrefix,
   resolveApiModelId,
+  resolveContextWindow,
   trimOrNull,
 } from "@t3tools/shared/model";
 import {
@@ -2732,9 +2733,15 @@ function makeClaudeAdapter(options?: ClaudeAdapterLiveOptions) {
         const claudeBinaryPath = claudeSettings.binaryPath;
         const modelSelection =
           input.modelSelection?.provider === "claudeAgent" ? input.modelSelection : undefined;
-        const apiModelId = modelSelection ? resolveApiModelId(modelSelection) : undefined;
-        const requestedEffort = trimOrNull(modelSelection?.options?.effort ?? null);
         const caps = getClaudeModelCapabilities(modelSelection?.model);
+        const contextWindow = resolveContextWindow(caps, modelSelection?.options?.contextWindow);
+        const apiModelId = modelSelection
+          ? resolveApiModelId({
+              ...modelSelection,
+              options: { ...modelSelection.options, contextWindow },
+            })
+          : undefined;
+        const requestedEffort = trimOrNull(modelSelection?.options?.effort ?? null);
         const effort =
           requestedEffort && hasEffortLevel(caps, requestedEffort) ? requestedEffort : null;
         const fastMode = modelSelection?.options?.fastMode === true && caps.supportsFastMode;
@@ -2899,7 +2906,15 @@ function makeClaudeAdapter(options?: ClaudeAdapterLiveOptions) {
         }
 
         if (modelSelection?.model) {
-          const apiModelId = resolveApiModelId(modelSelection);
+          const turnCaps = getClaudeModelCapabilities(modelSelection.model);
+          const turnContextWindow = resolveContextWindow(
+            turnCaps,
+            modelSelection.options?.contextWindow,
+          );
+          const apiModelId = resolveApiModelId({
+            ...modelSelection,
+            options: { ...modelSelection.options, contextWindow: turnContextWindow },
+          });
           yield* Effect.tryPromise({
             try: () => context.query.setModel(apiModelId),
             catch: (cause) => toRequestError(input.threadId, "turn/setModel", cause),

@@ -104,7 +104,10 @@ const makeClaudeTextGeneration = Effect.gen(function* () {
             "--json-schema",
             jsonSchemaStr,
             "--model",
-            resolveApiModelId(modelSelection),
+            resolveApiModelId({
+              ...modelSelection,
+              options: normalizedOptions ?? {},
+            }),
             ...(normalizedOptions?.effort ? ["--effort", normalizedOptions.effort] : []),
             ...(Object.keys(settings).length > 0 ? ["--settings", JSON.stringify(settings)] : []),
             "--dangerously-skip-permissions",
