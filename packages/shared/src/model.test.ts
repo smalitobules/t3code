@@ -36,8 +36,8 @@ const claudeCaps: ModelCapabilities = {
   supportsFastMode: false,
   supportsThinkingToggle: false,
   contextWindowOptions: [
-    { value: "200k", label: "200k" },
-    { value: "1m", label: "1M", isDefault: true },
+    { value: "200k", label: "200k", isDefault: true },
+    { value: "1m", label: "1M" },
   ],
   promptInjectedEffortLevels: ["ultrathink"],
 };
@@ -117,7 +117,7 @@ describe("misc helpers", () => {
 
 describe("context window helpers", () => {
   it("reads default context window", () => {
-    expect(getDefaultContextWindow(claudeCaps)).toBe("1m");
+    expect(getDefaultContextWindow(claudeCaps)).toBe("200k");
   });
 
   it("returns null for models without context window options", () => {
@@ -142,17 +142,16 @@ describe("resolveApiModelId", () => {
     ).toBe("claude-opus-4-6[1m]");
   });
 
-  it("applies default context window suffix when contextWindow is not set", () => {
-    // 1m is the default for claudeCaps, so [1m] suffix should be applied
+  it("returns the model as-is when contextWindow is not set (200k default)", () => {
     expect(
       resolveApiModelId({ provider: "claudeAgent", model: "claude-opus-4-6" }, claudeCaps),
-    ).toBe("claude-opus-4-6[1m]");
+    ).toBe("claude-opus-4-6");
     expect(
       resolveApiModelId(
         { provider: "claudeAgent", model: "claude-opus-4-6", options: {} },
         claudeCaps,
       ),
-    ).toBe("claude-opus-4-6[1m]");
+    ).toBe("claude-opus-4-6");
   });
 
   it("returns the model as-is for explicit 200k (no suffix needed)", () => {
@@ -165,13 +164,13 @@ describe("resolveApiModelId", () => {
   });
 
   it("falls back to default when context window value is unsupported", () => {
-    // bogus is not in contextWindowOptions, so falls back to default (1m)
+    // bogus is not in contextWindowOptions, so falls back to default (200k)
     expect(
       resolveApiModelId(
         { provider: "claudeAgent", model: "claude-opus-4-6", options: { contextWindow: "bogus" } },
         claudeCaps,
       ),
-    ).toBe("claude-opus-4-6[1m]");
+    ).toBe("claude-opus-4-6");
   });
 
   it("returns the model as-is when model has no context window options", () => {
