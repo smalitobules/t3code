@@ -78,7 +78,10 @@ const TEST_PROVIDERS: ReadonlyArray<ServerProvider> = [
           ],
           supportsFastMode: true,
           supportsThinkingToggle: false,
-          contextWindowOptions: [],
+          contextWindowOptions: [
+            { value: "200k", label: "200k", isDefault: true },
+            { value: "1m", label: "1M" },
+          ],
           promptInjectedEffortLevels: ["ultrathink"],
         },
       },
@@ -95,7 +98,10 @@ const TEST_PROVIDERS: ReadonlyArray<ServerProvider> = [
           ],
           supportsFastMode: false,
           supportsThinkingToggle: false,
-          contextWindowOptions: [],
+          contextWindowOptions: [
+            { value: "200k", label: "200k", isDefault: true },
+            { value: "1m", label: "1M" },
+          ],
           promptInjectedEffortLevels: ["ultrathink"],
         },
       },
